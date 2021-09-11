@@ -1,12 +1,10 @@
-﻿using Api_Cadastro_Usuario.Interfaces.Repository;
+﻿using Api_Cadastro_Usuario.ClassConvert;
+using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.Models;
-using Api_Cadastro_Usuario.POCO;
 using Api_Cadastro_Usuario.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Api_Cadastro_Usuario.Service
 {
@@ -18,39 +16,60 @@ namespace Api_Cadastro_Usuario.Service
             _repository = repository;
         }
 
-        public UsuarioModel Create(UsuarioModel model)
+        public UsuarioViewModel Create(UsuarioViewModel usuario)
         {
-            throw new NotImplementedException();
+            if (usuario.GetType() != typeof(UsuarioViewModel))
+                return null;
+
+            var response = usuario.ViewModelToUsuario();
+            _repository.Create(response);
+            return usuario;
+
         }
 
-        public UsuarioModel Delet(UsuarioModel model)
+        public UsuarioModel Delet(Guid model)
         {
-            throw new NotImplementedException();
+            var usuario = _repository.GetOne(model);
+            if (usuario == null)
+                return null;
+            _repository.Delet(usuario);
+            return usuario;
         }
 
         public IEnumerable<UsuarioModel> GetAll()
         {
-            throw new NotImplementedException();
+            return _repository.GetAll();
         }
 
         public UsuarioModel GetByEmail(string email)
         {
-            throw new NotImplementedException();
+            var response = _repository.GetByEmail(email);
+            if (response == null)
+                return null;
+            return response;
         }
 
-        public UsuarioModel GetOne(Guid id)
+        public UsuarioModel GetOne(Guid codigo)
+        {
+            var response = _repository.GetOne(codigo);
+            if (response == null)
+                return null;
+            return response;
+        }
+
+        public UsuarioViewModel Login(UsuarioViewModel loginUsuario)
         {
             throw new NotImplementedException();
         }
 
-        public UsuarioLogin Login(UsuarioLogin loginUsuario)
+        public UsuarioViewModel Put(Guid id, UsuarioViewModel usuario)
         {
-            throw new NotImplementedException();
-        }
-
-        public UsuarioViewModel Post(UsuarioViewModel usuario)
-        {
-            throw new NotImplementedException();
+            var response = _repository.GetOne(id);
+            if (response == null)
+                return null;
+            var convertClass = usuario.ViewModelToUsuario();
+            _repository.Put(convertClass);
+            return usuario;
         }
     }
 }

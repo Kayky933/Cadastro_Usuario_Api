@@ -2,11 +2,10 @@
 using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.POCO;
-using Api_Cadastro_Usuario.ViewModel;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Api_Cadastro_Usuario.Repository
 {
@@ -17,29 +16,26 @@ namespace Api_Cadastro_Usuario.Repository
         {
             _context = context;
         }
-        public void Create(UsuarioModel model)
-        {
-            throw new NotImplementedException();
-        }
 
         public void Delet(UsuarioModel model)
         {
-            throw new NotImplementedException();
+            _context.UsuarioModel.Remove(model);
+            SaveChangesDb();
         }
 
         public IEnumerable<UsuarioModel> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.UsuarioModel.ToList();
         }
 
         public UsuarioModel GetByEmail(string email)
         {
-            throw new NotImplementedException();
+            return _context.UsuarioModel.Where(e => e.Email == email).FirstOrDefault();
         }
 
-        public UsuarioModel GetOne(Guid id)
+        public UsuarioModel GetOne(Guid codigo)
         {
-            throw new NotImplementedException();
+            return _context.UsuarioModel.Where(e => e.Codigo == codigo).FirstOrDefault();
         }
 
         public UsuarioLogin Login(UsuarioLogin loginUsuario)
@@ -47,9 +43,20 @@ namespace Api_Cadastro_Usuario.Repository
             throw new NotImplementedException();
         }
 
-        public UsuarioViewModel Post(UsuarioViewModel usuario)
+        public void Create(UsuarioModel usuario)
         {
-            throw new NotImplementedException();
+            _context.UsuarioModel.Add(usuario);
+            SaveChangesDb();
+        }
+        public void SaveChangesDb()
+        {
+            _context.SaveChanges();
+        }
+
+        public void Put(UsuarioModel usuario)
+        {
+            _context.UsuarioModel.Update(usuario);
+            SaveChangesDb();
         }
     }
 }

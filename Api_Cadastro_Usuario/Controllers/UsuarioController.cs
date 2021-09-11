@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Api_Cadastro_Usuario.ClassConvert;
+using Api_Cadastro_Usuario.Interfaces.Service;
+using Api_Cadastro_Usuario.ViewModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Api_Cadastro_Usuario.Data;
-using Api_Cadastro_Usuario.Models;
+using System;
 
 namespace Api_Cadastro_Usuario.Controllers
 {
@@ -14,95 +10,73 @@ namespace Api_Cadastro_Usuario.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly Api_Cadastro_UsuarioContext _context;
+        private readonly IUsuarioService _service;
 
-        public UsuarioController(Api_Cadastro_UsuarioContext context)
+        public UsuarioController(IUsuarioService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: api/Usuario
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UsuarioModel>>> GetUsuarioModel()
+        public IActionResult GetUsuarioModel()
         {
-            return await _context.UsuarioModel.ToListAsync();
+            return Ok(_service.GetAll());
         }
 
         // GET: api/Usuario/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<UsuarioModel>> GetUsuarioModel(Guid id)
+        public IActionResult GetUsuarioModel(Guid id)
         {
-            var usuarioModel = await _context.UsuarioModel.FindAsync(id);
+            var usuarioModel = _service.GetOne(id);
 
             if (usuarioModel == null)
             {
                 return NotFound();
             }
 
-            return usuarioModel;
+            return Ok(usuarioModel);
         }
 
         // PUT: api/Usuario/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuarioModel(Guid id, UsuarioModel usuarioModel)
+        public IActionResult PutUsuarioModel(Guid id, UsuarioViewModel usuarioModel)
         {
-            if (id != usuarioModel.Codigo)
-            {
+            var usuarioCode = _service.GetOne(id);
+            if (usuarioCode == null)
+                return NotFound();
+
+            var response = _service.Put(id, usuarioModel);
+            if (response == null)
                 return BadRequest();
-            }
-
-            _context.Entry(usuarioModel).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UsuarioModelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(usuarioCode);
         }
 
         // POST: api/Usuario
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<UsuarioModel>> PostUsuarioModel(UsuarioModel usuarioModel)
+        public IActionResult PostUsuarioModel(UsuarioViewModel usuarioModel)
         {
-            _context.UsuarioModel.Add(usuarioModel);
-            await _context.SaveChangesAsync();
+            var newUser = _service.Create(usuarioModel);
+            if (newUser == null)
+                return StatusCode(400, "Ops, Pelo visto ha alguma informação que não foi preenchida corretamente");
 
-            return CreatedAtAction("GetUsuarioModel", new { id = usuarioModel.Codigo }, usuarioModel);
+            return StatusCode(201, "Usuario criado com sucesso!");
         }
 
         // DELETE: api/Usuario/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUsuarioModel(Guid id)
+        public IActionResult DeleteUsuarioModel(Guid id)
         {
-            var usuarioModel = await _context.UsuarioModel.FindAsync(id);
+            var usuarioModel = _service.Delet(id);
             if (usuarioModel == null)
             {
                 return NotFound();
             }
 
-            _context.UsuarioModel.Remove(usuarioModel);
-            await _context.SaveChangesAsync();
-
             return NoContent();
         }
 
-        private bool UsuarioModelExists(Guid id)
-        {
-            return _context.UsuarioModel.Any(e => e.Codigo == id);
-        }
     }
 }

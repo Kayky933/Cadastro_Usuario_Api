@@ -1,22 +1,15 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Api_Cadastro_Usuario.Data;
+using Api_Cadastro_Usuario.Interfaces.Repository;
+using Api_Cadastro_Usuario.Interfaces.Service;
+using Api_Cadastro_Usuario.Repository;
+using Api_Cadastro_Usuario.Service;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Api_Cadastro_Usuario.Data;
-using Api_Cadastro_Usuario.Interfaces.Repository;
-using Api_Cadastro_Usuario.Interfaces.Service;
-using Api_Cadastro_Usuario.Service;
-using Api_Cadastro_Usuario.Repository;
 
 namespace Api_Cadastro_Usuario
 {
