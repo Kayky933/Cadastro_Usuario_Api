@@ -1,5 +1,6 @@
 ﻿using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.POCO;
+using System;
 
 namespace Api_Cadastro_Usuario.Interfaces.Repository
 {
@@ -7,6 +8,6 @@ namespace Api_Cadastro_Usuario.Interfaces.Repository
     {
         public void Create(UsuarioModel usuario);
         public UsuarioLogin Login(UsuarioLogin loginUsuario);
-        public void Put(UsuarioModel usuario);
+        public UsuarioModel Put(Guid id, UsuarioModel usuario);
     }
 }

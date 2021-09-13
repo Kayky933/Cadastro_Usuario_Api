@@ -2,10 +2,12 @@
 using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.POCO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Api_Cadastro_Usuario.Repository
 {
@@ -53,10 +55,31 @@ namespace Api_Cadastro_Usuario.Repository
             _context.SaveChanges();
         }
 
-        public void Put(UsuarioModel usuario)
+        public UsuarioModel Put(Guid id, UsuarioModel usuario)
         {
-            _context.UsuarioModel.Update(usuario);
-            SaveChangesDb();
+
+            if (id != usuario.Codigo)            
+                return null;            
+
+            _context.Entry(usuario).State = EntityState.Modified;
+
+            try
+            {
+                SaveChangesDb();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (this.GetOne(id)==null)
+                {
+                    return null;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return usuario;
         }
     }
 }

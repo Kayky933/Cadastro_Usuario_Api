@@ -1,7 +1,10 @@
 ﻿using Api_Cadastro_Usuario.ClassConvert;
+using Api_Cadastro_Usuario.Data;
 using Api_Cadastro_Usuario.Interfaces.Service;
+using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Api_Cadastro_Usuario.Controllers
@@ -11,10 +14,12 @@ namespace Api_Cadastro_Usuario.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioService _service;
+        private readonly Api_Cadastro_UsuarioContext _context;
 
-        public UsuarioController(IUsuarioService service)
+        public UsuarioController(IUsuarioService service, Api_Cadastro_UsuarioContext context)
         {
             _service = service;
+            _context = context;
         }
 
         // GET: api/Usuario
@@ -41,16 +46,32 @@ namespace Api_Cadastro_Usuario.Controllers
         // PUT: api/Usuario/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public IActionResult PutUsuarioModel(Guid id, UsuarioViewModel usuarioModel)
+        public IActionResult PutUsuarioModel(Guid id, UsuarioModel usuarioModel)
         {
-            var usuarioCode = _service.GetOne(id);
-            if (usuarioCode == null)
-                return NotFound();
-
-            var response = _service.Put(id, usuarioModel);
-            if (response == null)
+            if (id != usuarioModel.Codigo)
+            {
                 return BadRequest();
-            return Ok(usuarioCode);
+            }
+
+            _context.Entry(usuarioModel).State = EntityState.Modified;
+
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (_service.GetOne(id)==null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         // POST: api/Usuario

@@ -62,14 +62,14 @@ namespace Api_Cadastro_Usuario.Service
             throw new NotImplementedException();
         }
 
-        public UsuarioViewModel Put(Guid id, UsuarioViewModel usuario)
+        public UsuarioModel Put(Guid id, UsuarioModel usuario)
         {
             var response = _repository.GetOne(id);
             if (response == null)
                 return null;
-            var convertClass = usuario.ViewModelToUsuario();
-            _repository.Put(convertClass);
-            return usuario;
+
+            var putUser = _repository.Put(id, usuario);
+            return putUser;
         }
     }
 }

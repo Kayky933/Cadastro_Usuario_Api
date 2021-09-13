@@ -8,6 +8,6 @@ namespace Api_Cadastro_Usuario.Interfaces.Service
     {
         public UsuarioViewModel Create(UsuarioViewModel usuario);
         public UsuarioViewModel Login(UsuarioViewModel loginUsuario);
-        public UsuarioViewModel Put(Guid id,UsuarioViewModel usuario);
+        public UsuarioModel Put(Guid id, UsuarioModel usuario);
     }
 }
