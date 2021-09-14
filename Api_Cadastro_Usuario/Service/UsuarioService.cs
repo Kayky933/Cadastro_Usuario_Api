@@ -3,6 +3,7 @@ using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.ViewModel;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
@@ -47,6 +48,11 @@ namespace Api_Cadastro_Usuario.Service
             if (response == null)
                 return null;
             return response;
+        }
+
+        public DbSet<UsuarioModel> GetContext()
+        {
+            return _repository.GetContext();
         }
 
         public UsuarioModel GetOne(Guid codigo)

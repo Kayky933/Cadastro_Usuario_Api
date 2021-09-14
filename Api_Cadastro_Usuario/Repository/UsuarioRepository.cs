@@ -2,12 +2,10 @@
 using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.POCO;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Api_Cadastro_Usuario.Repository
 {
@@ -24,7 +22,10 @@ namespace Api_Cadastro_Usuario.Repository
             _context.UsuarioModel.Remove(model);
             SaveChangesDb();
         }
-
+        public DbSet<UsuarioModel> GetContext()
+        {
+            return _context.UsuarioModel;
+        }
         public IEnumerable<UsuarioModel> GetAll()
         {
             return _context.UsuarioModel.ToList();
@@ -58,10 +59,8 @@ namespace Api_Cadastro_Usuario.Repository
         public UsuarioModel Put(Guid id, UsuarioModel usuario)
         {
 
-            if (id != usuario.Codigo)            
-                return null;            
-
-            _context.Entry(usuario).State = EntityState.Modified;
+            if (id != usuario.Codigo)
+                return null;
 
             try
             {
@@ -69,7 +68,7 @@ namespace Api_Cadastro_Usuario.Repository
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (this.GetOne(id)==null)
+                if (this.GetOne(id) == null)
                 {
                     return null;
                 }

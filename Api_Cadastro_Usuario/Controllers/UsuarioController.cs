@@ -1,7 +1,6 @@
 ﻿using Api_Cadastro_Usuario.ClassConvert;
 using Api_Cadastro_Usuario.Data;
 using Api_Cadastro_Usuario.Interfaces.Service;
-using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +13,10 @@ namespace Api_Cadastro_Usuario.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioService _service;
-        private readonly Api_Cadastro_UsuarioContext _context;
 
-        public UsuarioController(IUsuarioService service, Api_Cadastro_UsuarioContext context)
+        public UsuarioController(IUsuarioService service)
         {
             _service = service;
-            _context = context;
         }
 
         // GET: api/Usuario
@@ -46,31 +43,15 @@ namespace Api_Cadastro_Usuario.Controllers
         // PUT: api/Usuario/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public IActionResult PutUsuarioModel(Guid id, UsuarioModel usuarioModel)
+        public IActionResult PutUsuarioModel(Guid id, UsuarioViewModel usuarioModel)
         {
-            if (id != usuarioModel.Codigo)
-            {
+            var user = usuarioModel.ViewModelToUsuario();
+            user.Codigo = id;
+            _service.GetContext().Update(user).State = EntityState.Modified;
+
+            var response = _service.Put(id, user);
+            if (response == null)
                 return BadRequest();
-            }
-
-            _context.Entry(usuarioModel).State = EntityState.Modified;
-
-            try
-            {
-                _context.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (_service.GetOne(id)==null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
             return NoContent();
         }
 
