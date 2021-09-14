@@ -3,6 +3,7 @@ using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.ViewModel;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
@@ -49,6 +50,11 @@ namespace Api_Cadastro_Usuario.Service
             return response;
         }
 
+        public DbSet<UsuarioModel> GetContext()
+        {
+            return _repository.GetContext();
+        }
+
         public UsuarioModel GetOne(Guid codigo)
         {
             var response = _repository.GetOne(codigo);
@@ -62,14 +68,14 @@ namespace Api_Cadastro_Usuario.Service
             throw new NotImplementedException();
         }
 
-        public UsuarioViewModel Put(Guid id, UsuarioViewModel usuario)
+        public UsuarioModel Put(Guid id, UsuarioModel usuario)
         {
             var response = _repository.GetOne(id);
             if (response == null)
                 return null;
-            var convertClass = usuario.ViewModelToUsuario();
-            _repository.Put(convertClass);
-            return usuario;
+
+            var putUser = _repository.Put(id, usuario);
+            return putUser;
         }
     }
 }

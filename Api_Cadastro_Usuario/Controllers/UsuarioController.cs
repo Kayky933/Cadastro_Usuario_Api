@@ -1,7 +1,9 @@
 ﻿using Api_Cadastro_Usuario.ClassConvert;
+using Api_Cadastro_Usuario.Data;
 using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Api_Cadastro_Usuario.Controllers
@@ -43,14 +45,14 @@ namespace Api_Cadastro_Usuario.Controllers
         [HttpPut("{id}")]
         public IActionResult PutUsuarioModel(Guid id, UsuarioViewModel usuarioModel)
         {
-            var usuarioCode = _service.GetOne(id);
-            if (usuarioCode == null)
-                return NotFound();
+            var user = usuarioModel.ViewModelToUsuario();
+            user.Codigo = id;
+            _service.GetContext().Update(user).State = EntityState.Modified;
 
-            var response = _service.Put(id, usuarioModel);
+            var response = _service.Put(id, user);
             if (response == null)
                 return BadRequest();
-            return Ok(usuarioCode);
+            return NoContent();
         }
 
         // POST: api/Usuario

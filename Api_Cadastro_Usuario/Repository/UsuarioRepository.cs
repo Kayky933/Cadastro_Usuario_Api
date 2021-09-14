@@ -22,7 +22,10 @@ namespace Api_Cadastro_Usuario.Repository
             _context.UsuarioModel.Remove(model);
             SaveChangesDb();
         }
-
+        public DbSet<UsuarioModel> GetContext()
+        {
+            return _context.UsuarioModel;
+        }
         public IEnumerable<UsuarioModel> GetAll()
         {
             return _context.UsuarioModel.ToList();
@@ -53,10 +56,29 @@ namespace Api_Cadastro_Usuario.Repository
             _context.SaveChanges();
         }
 
-        public void Put(UsuarioModel usuario)
+        public UsuarioModel Put(Guid id, UsuarioModel usuario)
         {
-            _context.UsuarioModel.Update(usuario);
-            SaveChangesDb();
+
+            if (id != usuario.Codigo)
+                return null;
+
+            try
+            {
+                SaveChangesDb();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (this.GetOne(id) == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return usuario;
         }
     }
 }
