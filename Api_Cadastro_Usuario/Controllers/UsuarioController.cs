@@ -1,6 +1,6 @@
 ﻿using Api_Cadastro_Usuario.ClassConvert;
-using Api_Cadastro_Usuario.Data;
 using Api_Cadastro_Usuario.Interfaces.Service;
+using Api_Cadastro_Usuario.POCO;
 using Api_Cadastro_Usuario.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -79,6 +79,7 @@ namespace Api_Cadastro_Usuario.Controllers
 
             return NoContent();
         }
+       
 
     }
 }

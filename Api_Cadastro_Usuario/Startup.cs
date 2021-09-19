@@ -1,15 +1,15 @@
 ﻿using Api_Cadastro_Usuario.Data;
-using Api_Cadastro_Usuario.Interfaces.Repository;
-using Api_Cadastro_Usuario.Interfaces.Service;
-using Api_Cadastro_Usuario.Repository;
-using Api_Cadastro_Usuario.Service;
+using Api_Cadastro_Usuario.StartUpConfiguration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace Api_Cadastro_Usuario
 {
@@ -27,12 +27,10 @@ namespace Api_Cadastro_Usuario
         {
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api_Cadastro_Usuario", Version = "v1" });
-            });
-            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-            services.AddScoped<IUsuarioService, UsuarioService>();
+
+            ConfigStart.SwaggerConfig(services);
+            ConfigStart.InterfacesConfig(services);
+            ConfigStart.CorsConfig(services);            
 
             services.AddDbContext<Api_Cadastro_UsuarioContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Api_Cadastro_UsuarioContext")));
@@ -53,7 +51,7 @@ namespace Api_Cadastro_Usuario
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.UseCors("AllowAllOrigins");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

@@ -7,7 +7,6 @@ namespace Api_Cadastro_Usuario.Interfaces.Repository
     {
         public T GetOne(Guid codigo);
         public IEnumerable<T> GetAll();
-        public T GetByEmail(string email);
         public void Delet(T model);
     }
 }
