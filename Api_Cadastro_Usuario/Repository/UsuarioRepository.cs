@@ -1,7 +1,6 @@
 ﻿using Api_Cadastro_Usuario.Data;
 using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Models;
-using Api_Cadastro_Usuario.POCO;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -41,9 +40,9 @@ namespace Api_Cadastro_Usuario.Repository
             return _context.UsuarioModel.Where(e => e.Codigo == codigo).FirstOrDefault();
         }
 
-        public UsuarioLogin Login(UsuarioLogin loginUsuario)
+        public UsuarioModel Login(UsuarioModel usuario)
         {
-            throw new NotImplementedException();
+            return _context.UsuarioModel.Where(a => a.Email == usuario.Email && a.Senha == usuario.Senha).FirstOrDefault();
         }
 
         public void Create(UsuarioModel usuario)
@@ -79,6 +78,11 @@ namespace Api_Cadastro_Usuario.Repository
             }
 
             return usuario;
+        }
+
+        public UsuarioModel GetByPassword(string senha)
+        {
+            return _context.UsuarioModel.Where(a => a.Senha == senha).FirstOrDefault();
         }
     }
 }

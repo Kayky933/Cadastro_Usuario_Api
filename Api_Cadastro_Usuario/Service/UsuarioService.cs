@@ -2,6 +2,7 @@
 using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.Models;
+using Api_Cadastro_Usuario.POCO;
 using Api_Cadastro_Usuario.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -49,7 +50,13 @@ namespace Api_Cadastro_Usuario.Service
                 return null;
             return response;
         }
-
+        public UsuarioModel GetByPassword(string senha)
+        {
+            var response = _repository.GetByPassword(senha);
+            if (response == null)
+                return null;
+            return response;
+        }
         public DbSet<UsuarioModel> GetContext()
         {
             return _repository.GetContext();
@@ -63,9 +70,13 @@ namespace Api_Cadastro_Usuario.Service
             return response;
         }
 
-        public UsuarioViewModel Login(UsuarioViewModel loginUsuario)
+        public UsuarioLogin Login(UsuarioLogin loginUsuario)
         {
-            throw new NotImplementedException();
+            var usuario = loginUsuario.LoginModelToUsuario();
+            var response = _repository.Login(usuario);
+            if (response == null)
+                return null;
+            return loginUsuario;
         }
 
         public UsuarioModel Put(Guid id, UsuarioModel usuario)

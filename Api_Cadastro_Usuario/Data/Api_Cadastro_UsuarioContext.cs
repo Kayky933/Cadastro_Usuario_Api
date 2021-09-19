@@ -10,5 +10,6 @@ namespace Api_Cadastro_Usuario.Data
         }
 
         public DbSet<Api_Cadastro_Usuario.Models.UsuarioModel> UsuarioModel { get; set; }
+        public DbSet<Api_Cadastro_Usuario.Models.TasksToDoModel> TasksToDo { get; set; }
     }
 }
