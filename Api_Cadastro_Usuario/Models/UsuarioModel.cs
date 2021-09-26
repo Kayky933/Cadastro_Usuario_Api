@@ -17,6 +17,7 @@ namespace Api_Cadastro_Usuario.Models
         [DataType(DataType.EmailAddress)]
         [MaxLength(150)]
         public string Email { get; set; }
+        public string Role { get; set; }
         [MaxLength(100)]
         [MinLength(8)]
         [DataType(DataType.Password)]

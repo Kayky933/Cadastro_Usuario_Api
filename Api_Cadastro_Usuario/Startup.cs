@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace Api_Cadastro_Usuario
@@ -25,12 +24,33 @@ namespace Api_Cadastro_Usuario
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            ConfigStart.CorsConfig(services);
             services.AddControllers();
-
+            
             ConfigStart.SwaggerConfig(services);
+            //token config
+            var secret = Encoding.ASCII.GetBytes(Configuration.GetSection("JwtConfigurations:Secret").Value);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(secret),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+
+                    };
+                });
+            //
             ConfigStart.InterfacesConfig(services);
-            ConfigStart.CorsConfig(services);            
+
 
             services.AddDbContext<Api_Cadastro_UsuarioContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Api_Cadastro_UsuarioContext")));
@@ -47,11 +67,11 @@ namespace Api_Cadastro_Usuario
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseRouting();
-
-            app.UseAuthorization();
             app.UseCors("AllowAllOrigins");
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

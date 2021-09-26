@@ -1,13 +1,15 @@
 ﻿using Api_Cadastro_Usuario.Models;
+using Api_Cadastro_Usuario.Models.ViewModel;
 using Api_Cadastro_Usuario.POCO;
-using Api_Cadastro_Usuario.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 
 namespace Api_Cadastro_Usuario.Interfaces.Service
 {
     public interface IUsuarioService : IBaseService<UsuarioModel>
     {
+        public IEnumerable<TasksToDoModel> GetAllTasks(Guid id);
         public UsuarioViewModel Create(UsuarioViewModel usuario);
         public UsuarioLogin Login(UsuarioLogin loginUsuario);
         public DbSet<UsuarioModel> GetContext();

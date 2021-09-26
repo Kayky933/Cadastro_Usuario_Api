@@ -2,7 +2,7 @@
 using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.Models;
-using Api_Cadastro_Usuario.ViewModel;
+using Api_Cadastro_Usuario.Models.ViewModel;
 using System;
 using System.Collections.Generic;
 

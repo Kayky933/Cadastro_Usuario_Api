@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Api_Cadastro_Usuario.ViewModel
+namespace Api_Cadastro_Usuario.Models.ViewModel
 {
     public class UsuarioViewModel
     {

@@ -1,7 +1,5 @@
 ﻿using Api_Cadastro_Usuario.Interfaces.Service;
-using Api_Cadastro_Usuario.Models;
-using Api_Cadastro_Usuario.ViewModel;
-using Microsoft.AspNetCore.Authorization;
+using Api_Cadastro_Usuario.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -26,7 +24,7 @@ namespace Api_Cadastro_Usuario.Controllers
             return Ok(_context.GetAll());
         }
         //[Authorize]
-       
+
 
         // GET: api/TasksToDo/5
         //[Authorize]
