@@ -1,6 +1,6 @@
 ﻿using Api_Cadastro_Usuario.Models;
+using Api_Cadastro_Usuario.Models.ViewModel;
 using Api_Cadastro_Usuario.POCO;
-using Api_Cadastro_Usuario.ViewModel;
 
 namespace Api_Cadastro_Usuario.ClassConvert
 {

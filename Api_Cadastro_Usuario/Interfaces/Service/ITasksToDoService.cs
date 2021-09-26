@@ -1,5 +1,5 @@
 ﻿using Api_Cadastro_Usuario.Models;
-using Api_Cadastro_Usuario.ViewModel;
+using Api_Cadastro_Usuario.Models.ViewModel;
 using System;
 
 namespace Api_Cadastro_Usuario.Interfaces.Service

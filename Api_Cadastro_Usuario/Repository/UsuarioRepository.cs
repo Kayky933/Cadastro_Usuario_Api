@@ -21,6 +21,10 @@ namespace Api_Cadastro_Usuario.Repository
             _context.UsuarioModel.Remove(model);
             SaveChangesDb();
         }
+        public IEnumerable<TasksToDoModel> GetAllTasks(Guid id)
+        {
+            return _context.TasksToDo.Where(x => x.Id_Usuario == id).OrderBy(x=>x.Horario_Post).ToList();
+        }
         public DbSet<UsuarioModel> GetContext()
         {
             return _context.UsuarioModel;

@@ -2,8 +2,8 @@
 using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.Models;
+using Api_Cadastro_Usuario.Models.ViewModel;
 using Api_Cadastro_Usuario.POCO;
-using Api_Cadastro_Usuario.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -28,7 +28,11 @@ namespace Api_Cadastro_Usuario.Service
             return usuario;
 
         }
+        public IEnumerable<TasksToDoModel> GetAllTasks(Guid id)
+        {
+            return _repository.GetAllTasks(id);
 
+        }
         public UsuarioModel Delet(Guid model)
         {
             var usuario = _repository.GetOne(model);

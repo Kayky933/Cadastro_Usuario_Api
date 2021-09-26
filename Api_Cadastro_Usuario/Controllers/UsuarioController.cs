@@ -1,10 +1,15 @@
 ﻿using Api_Cadastro_Usuario.ClassConvert;
 using Api_Cadastro_Usuario.Interfaces.Service;
+using Api_Cadastro_Usuario.Models;
+using Api_Cadastro_Usuario.Models.ViewModel;
 using Api_Cadastro_Usuario.POCO;
-using Api_Cadastro_Usuario.ViewModel;
+using Api_Cadastro_Usuario.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Api_Cadastro_Usuario.Controllers
 {
@@ -25,24 +30,18 @@ namespace Api_Cadastro_Usuario.Controllers
         {
             return Ok(_service.GetAll());
         }
-
-        // GET: api/Usuario/5
-        [HttpGet("{id}")]
-        public IActionResult GetUsuarioModel(Guid id)
+        [Authorize]
+        [HttpGet("TasksUsuario/{id}")]
+        public IActionResult GetTasksToDo(Guid id)
         {
-            var usuarioModel = _service.GetOne(id);
-
-            if (usuarioModel == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(usuarioModel);
+            return Ok(_service.GetAllTasks(id));
         }
+
 
         // PUT: api/Usuario/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult PutUsuarioModel(Guid id, UsuarioViewModel usuarioModel)
         {
             var user = usuarioModel.ViewModelToUsuario();
@@ -69,6 +68,7 @@ namespace Api_Cadastro_Usuario.Controllers
 
         // DELETE: api/Usuario/5
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult DeleteUsuarioModel(Guid id)
         {
             var usuarioModel = _service.Delet(id);
@@ -79,7 +79,22 @@ namespace Api_Cadastro_Usuario.Controllers
 
             return NoContent();
         }
-       
+        [Route("Login")]
+        [HttpPost]
+        public IActionResult Login(UsuarioLogin user)
+        {
+            var login = _service.Login(user);
+            if (login == null)
+                return NotFound();
+            var token = TokenService.TokenGenerator(login);
+            login.Senha = "";
+            return Ok(new
+            {
+                Login = login,
+                Token = token
+            });
+        }
+
 
     }
 }
