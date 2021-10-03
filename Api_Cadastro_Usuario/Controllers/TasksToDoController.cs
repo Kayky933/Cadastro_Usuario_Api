@@ -40,7 +40,9 @@ namespace Api_Cadastro_Usuario.Controllers
         public IActionResult PostTasksToDoModel(TasksViewModel tasksToDoModel)
         {
             var task = _context.Create(tasksToDoModel);
-            return Ok(task);
+            if (!task.IsValid)
+                return BadRequest(MostrarErros(task));
+            return Ok(tasksToDoModel);
         }
 
         // DELETE: api/TasksToDo/5 

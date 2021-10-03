@@ -4,6 +4,7 @@ using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.Models.ViewModel;
 using Api_Cadastro_Usuario.POCO;
+using Api_Cadastro_Usuario.Validation.BusinessValidation;
 using Api_Cadastro_Usuario.Validation.ModelsValidation;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
@@ -22,13 +23,28 @@ namespace Api_Cadastro_Usuario.Service
 
         public ValidationResult Create(UsuarioViewModel usuario)
         {
-            var validation = new PostUsuarioValidation().Validate(usuario);
+            var validation = ValidateModelViewsusuario(usuario);
             if (validation.IsValid)
             {
                 var response = usuario.ViewModelToUsuario();
                 _repository.Create(response);
             }
             return validation;
+        }
+        private ValidationResult ValidateModelViewsusuario(UsuarioViewModel usuario)
+        {
+            var business = usuario.ViewModelToUsuario();
+            var validation = new PostUsuarioValidation().Validate(usuario);
+            var validationBusiness = new UsuarioBusinessValidation(_repository).Validate(business);
+
+            if (!validation.IsValid)
+                return validation;
+
+            if (!validationBusiness.IsValid)
+                return validationBusiness;
+
+            return validation;
+
         }
         public IEnumerable<TasksToDoModel> GetAllTasks(Guid id)
         {
@@ -76,13 +92,18 @@ namespace Api_Cadastro_Usuario.Service
             return response;
         }
 
-        public UsuarioLogin Login(UsuarioLogin loginUsuario)
+        public ValidationResult Login(UsuarioLogin loginUsuario)
         {
             var usuario = loginUsuario.LoginModelToUsuario();
+            var validation = new LoginUsuarioValidation(_repository).Validate(loginUsuario);
+            if (!validation.IsValid)
+                return validation;
+
             var response = _repository.Login(usuario);
             if (response == null)
-                return null;
-            return loginUsuario;
+                return validation;
+
+            return validation;
         }
 
         public ValidationResult Put(Guid id, UsuarioModel usuario)

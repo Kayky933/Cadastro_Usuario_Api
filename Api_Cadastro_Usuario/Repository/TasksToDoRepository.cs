@@ -42,6 +42,12 @@ namespace Api_Cadastro_Usuario.Repository
         {
             return _context.TasksToDo.Where(a => a.Id == codigo).FirstOrDefault();
         }
+
+        public UsuarioModel GetOneUsuario(Guid id)
+        {
+            return _context.UsuarioModel.Where(a => a.Codigo == id).FirstOrDefault();
+        }
+
         public void SaveChangesDb()
         {
             _context.SaveChanges();

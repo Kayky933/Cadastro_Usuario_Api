@@ -3,6 +3,8 @@ using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.Models.ViewModel;
+using Api_Cadastro_Usuario.Validation.ModelsValidation;
+using FluentValidation.Results;
 using System;
 using System.Collections.Generic;
 
@@ -15,12 +17,24 @@ namespace Api_Cadastro_Usuario.Service
         {
             _repository = repository;
         }
-        public TasksViewModel Create(TasksViewModel model)
+        public ValidationResult Create(TasksViewModel model)
         {
+            var validation = new TaskValidationModel(_repository).Validate(model);
             var convertModel = model.ViewModelToTasks();
+            if (!validation.IsValid)
+                return validation;
+
             _repository.Create(convertModel);
-            return model;
+            return validation;
         }
+        public UsuarioModel GetOneUsuario(Guid codigo)
+        {
+            var response = _repository.GetOneUsuario(codigo);
+            if (response == null)
+                return null;
+            return response;
+        }
+
 
         public TasksToDoModel Delet(Guid model)
         {

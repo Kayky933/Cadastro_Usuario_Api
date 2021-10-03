@@ -12,7 +12,7 @@ namespace Api_Cadastro_Usuario.Interfaces.Service
     {
         public IEnumerable<TasksToDoModel> GetAllTasks(Guid id);
         public ValidationResult Create(UsuarioViewModel usuario);
-        public UsuarioLogin Login(UsuarioLogin loginUsuario);
+        public ValidationResult Login(UsuarioLogin loginUsuario);
         public DbSet<UsuarioModel> GetContext();
         public ValidationResult Put(Guid id, UsuarioModel usuario);
         public UsuarioModel GetByEmail(string email);

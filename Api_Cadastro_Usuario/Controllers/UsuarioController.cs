@@ -79,14 +79,14 @@ namespace Api_Cadastro_Usuario.Controllers
         public IActionResult Login(UsuarioLogin user)
         {
             var login = _service.Login(user);
-            if (login == null)
-                return NotFound();
-            var token = SecurityService.TokenGenerator(login);
-            login.Senha = "";
+            if (!login.IsValid)
+                return NotFound(MostrarErros(login));
+            var token = SecurityService.TokenGenerator(user);
+            user.Senha = "";
 
             return Ok(new
             {
-                Login = login,
+                Login = user,
                 Token = token
             });
         }

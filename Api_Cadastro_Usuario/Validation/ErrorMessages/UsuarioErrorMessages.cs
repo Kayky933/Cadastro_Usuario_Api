@@ -10,6 +10,8 @@
         public static string EmailtamanhoMaximo = "O Campo E-mail não pode ter mais que 150 caracteres!";
         public static string EmailtamanhoMinimo = "O Campo E-mail tem que ter no mínimo 7 caracteres!";
         public static string EmailFormato = "O Campo E-mail precisa ser do tipo e-mail(ex:exemplo@exemplo;com)";
+        public static string EmailIncorreto = "Email Incorreto!";
+        public static string EmailJaCadastrado = "O Email colocado ja se encontra cadastrado!";
 
         public static string DataVazia = "O Campo EData de Nascimento não pode ser vazio!";
         public static string DataMinima = "Para se cadastrar você tem que ter no mínimo 11 anos!";
@@ -17,6 +19,7 @@
         public static string SenhaVazia = "O Campo Senha não pode ser vazio!";
         public static string SenhaTamanhoMaximo = "O Campo Senha não pode ter mais que 100 caracteres!";
         public static string SenhaTamanhoMinimo = "O campo Senha tem que ter no mínimo 8 caracteres!";
+        public static string SenhaIncorreta = "Senha Incorreta!";
 
     }
 }
