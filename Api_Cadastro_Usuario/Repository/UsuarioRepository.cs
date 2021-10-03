@@ -1,6 +1,7 @@
 ﻿using Api_Cadastro_Usuario.Data;
 using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Models;
+using Api_Cadastro_Usuario.Service;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace Api_Cadastro_Usuario.Repository
         }
         public IEnumerable<TasksToDoModel> GetAllTasks(Guid id)
         {
-            return _context.TasksToDo.Where(x => x.Id_Usuario == id).OrderBy(x=>x.Horario_Post).ToList();
+            return _context.TasksToDo.Where(x => x.Id_Usuario == id).OrderBy(x => x.Horario_Post).ToList();
         }
         public DbSet<UsuarioModel> GetContext()
         {
@@ -46,11 +47,13 @@ namespace Api_Cadastro_Usuario.Repository
 
         public UsuarioModel Login(UsuarioModel usuario)
         {
-            return _context.UsuarioModel.Where(a => a.Email == usuario.Email && a.Senha == usuario.Senha).FirstOrDefault();
+            var senha = SecurityService.Criptografar(usuario.Senha);
+            return _context.UsuarioModel.Where(a => a.Email == usuario.Email && a.Senha == senha).FirstOrDefault();
         }
 
         public void Create(UsuarioModel usuario)
         {
+            usuario.Senha = SecurityService.Criptografar(usuario.Senha);
             _context.UsuarioModel.Add(usuario);
             SaveChangesDb();
         }
@@ -59,34 +62,18 @@ namespace Api_Cadastro_Usuario.Repository
             _context.SaveChanges();
         }
 
-        public UsuarioModel Put(Guid id, UsuarioModel usuario)
+        public void Put(Guid id, UsuarioModel usuario)
         {
-
-            if (id != usuario.Codigo)
-                return null;
-
-            try
-            {
-                SaveChangesDb();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (this.GetOne(id) == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return usuario;
+            usuario.Codigo = id;
+            usuario.Senha = SecurityService.Criptografar(usuario.Senha);
+            this.GetContext().Update(usuario).State = EntityState.Modified;
+            SaveChangesDb();
         }
 
         public UsuarioModel GetByPassword(string senha)
         {
-            return _context.UsuarioModel.Where(a => a.Senha == senha).FirstOrDefault();
+            string senhaCriptograf = SecurityService.Criptografar(senha);
+            return _context.UsuarioModel.Where(a => a.Senha == senhaCriptograf).FirstOrDefault();
         }
     }
 }

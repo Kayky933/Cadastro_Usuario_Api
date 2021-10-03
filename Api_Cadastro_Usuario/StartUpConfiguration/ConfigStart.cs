@@ -2,13 +2,9 @@
 using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.Repository;
 using Api_Cadastro_Usuario.Service;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Text;
 
 namespace Api_Cadastro_Usuario.StartUpConfiguration
 {
@@ -52,7 +48,7 @@ namespace Api_Cadastro_Usuario.StartUpConfiguration
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api_Login_Project", Version = "v1" });
 
             });
-        }      
+        }
         public static void CorsConfig(IServiceCollection services)
         {
             services.AddCors(options =>

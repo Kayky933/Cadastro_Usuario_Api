@@ -1,5 +1,6 @@
 ﻿using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -7,7 +8,7 @@ namespace Api_Cadastro_Usuario.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TasksToDoController : ControllerBase
+    public class TasksToDoController : ControllerPai
     {
         private readonly ITasksToDoService _context;
 
@@ -17,17 +18,14 @@ namespace Api_Cadastro_Usuario.Controllers
         }
 
         // GET: api/TasksToDo
-        //[Authorize]
         [HttpGet]
         public IActionResult GetTasksToDo()
         {
             return Ok(_context.GetAll());
         }
-        //[Authorize]
-
 
         // GET: api/TasksToDo/5
-        //[Authorize]
+        [Authorize]
         [HttpGet("{id}")]
         public IActionResult GetTasksToDoModel(Guid id)
         {
@@ -37,7 +35,7 @@ namespace Api_Cadastro_Usuario.Controllers
 
         // POST: api/TasksToDo
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public IActionResult PostTasksToDoModel(TasksViewModel tasksToDoModel)
         {
@@ -45,8 +43,9 @@ namespace Api_Cadastro_Usuario.Controllers
             return Ok(task);
         }
 
-        // DELETE: api/TasksToDo/5        
-        //[Authorize]
+        // DELETE: api/TasksToDo/5 
+        [Authorize]
+        [ValidateAntiForgeryToken]
         [HttpDelete("{id}")]
         public IActionResult DeleteTasksToDoModel(Guid id)
         {
