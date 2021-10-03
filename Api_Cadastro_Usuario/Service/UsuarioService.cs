@@ -4,6 +4,8 @@ using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.Models.ViewModel;
 using Api_Cadastro_Usuario.POCO;
+using Api_Cadastro_Usuario.Validation.ModelsValidation;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,15 +20,15 @@ namespace Api_Cadastro_Usuario.Service
             _repository = repository;
         }
 
-        public UsuarioViewModel Create(UsuarioViewModel usuario)
+        public ValidationResult Create(UsuarioViewModel usuario)
         {
-            if (usuario.GetType() != typeof(UsuarioViewModel))
-                return null;
-
-            var response = usuario.ViewModelToUsuario();
-            _repository.Create(response);
-            return usuario;
-
+            var validation = new PostUsuarioValidation().Validate(usuario);
+            if (validation.IsValid)
+            {
+                var response = usuario.ViewModelToUsuario();
+                _repository.Create(response);
+            }
+            return validation;
         }
         public IEnumerable<TasksToDoModel> GetAllTasks(Guid id)
         {
@@ -83,14 +85,18 @@ namespace Api_Cadastro_Usuario.Service
             return loginUsuario;
         }
 
-        public UsuarioModel Put(Guid id, UsuarioModel usuario)
+        public ValidationResult Put(Guid id, UsuarioModel usuario)
         {
-            var response = _repository.GetOne(id);
-            if (response == null)
-                return null;
 
-            var putUser = _repository.Put(id, usuario);
-            return putUser;
+            var usuarioValidate = usuario.UsuarioModelToView();
+            var validation = new PostUsuarioValidation().Validate(usuarioValidate);
+
+            if (validation.IsValid)
+            {
+                _repository.Put(id, usuario);
+            }
+
+            return validation;
         }
     }
 }

@@ -1,21 +1,17 @@
 ﻿using Api_Cadastro_Usuario.ClassConvert;
 using Api_Cadastro_Usuario.Interfaces.Service;
-using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.Models.ViewModel;
 using Api_Cadastro_Usuario.POCO;
 using Api_Cadastro_Usuario.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Api_Cadastro_Usuario.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuarioController : ControllerBase
+    public class UsuarioController : ControllerPai
     {
         private readonly IUsuarioService _service;
 
@@ -45,12 +41,10 @@ namespace Api_Cadastro_Usuario.Controllers
         public IActionResult PutUsuarioModel(Guid id, UsuarioViewModel usuarioModel)
         {
             var user = usuarioModel.ViewModelToUsuario();
-            user.Codigo = id;
-            _service.GetContext().Update(user).State = EntityState.Modified;
 
             var response = _service.Put(id, user);
-            if (response == null)
-                return BadRequest();
+            if (!response.IsValid)
+                return BadRequest(MostrarErros(response));
             return NoContent();
         }
 
@@ -59,11 +53,12 @@ namespace Api_Cadastro_Usuario.Controllers
         [HttpPost]
         public IActionResult PostUsuarioModel(UsuarioViewModel usuarioModel)
         {
-            var newUser = _service.Create(usuarioModel);
-            if (newUser == null)
-                return StatusCode(400, "Ops, Pelo visto ha alguma informação que não foi preenchida corretamente");
 
-            return StatusCode(201, "Usuario criado com sucesso!");
+            var response = _service.Create(usuarioModel);
+            if (!response.IsValid)
+                return BadRequest(MostrarErros(response));
+
+            return Ok(usuarioModel);
         }
 
         // DELETE: api/Usuario/5
@@ -86,8 +81,9 @@ namespace Api_Cadastro_Usuario.Controllers
             var login = _service.Login(user);
             if (login == null)
                 return NotFound();
-            var token = TokenService.TokenGenerator(login);
+            var token = SecurityService.TokenGenerator(login);
             login.Senha = "";
+
             return Ok(new
             {
                 Login = login,

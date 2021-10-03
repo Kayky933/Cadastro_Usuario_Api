@@ -15,6 +15,16 @@ namespace Api_Cadastro_Usuario.ClassConvert
             usuario.Senha = viewModel.Senha;
             return usuario;
         }
+        public static UsuarioViewModel UsuarioModelToView(this UsuarioModel usuario)
+        {
+            UsuarioViewModel view = new();
+            view.Nome = usuario.Nome;
+            view.Senha = usuario.Senha;
+            view.Email = usuario.Email;
+            view.Data_Nascimento = usuario.Data_Nascimento;
+            return view;
+        }
+
         public static TasksToDoModel ViewModelToTasks(this TasksViewModel viewModel)
         {
             TasksToDoModel tasks = new();

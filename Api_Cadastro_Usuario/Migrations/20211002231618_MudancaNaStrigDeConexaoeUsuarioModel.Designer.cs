@@ -4,14 +4,16 @@ using Api_Cadastro_Usuario.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Api_Cadastro_Usuario.Migrations
 {
     [DbContext(typeof(Api_Cadastro_UsuarioContext))]
-    partial class Api_Cadastro_UsuarioContextModelSnapshot : ModelSnapshot
+    [Migration("20211002231618_MudancaNaStrigDeConexaoeUsuarioModel")]
+    partial class MudancaNaStrigDeConexaoeUsuarioModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

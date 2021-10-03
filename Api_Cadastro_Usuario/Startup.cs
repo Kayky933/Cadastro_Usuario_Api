@@ -26,7 +26,7 @@ namespace Api_Cadastro_Usuario
         {
             ConfigStart.CorsConfig(services);
             services.AddControllers();
-            
+
             ConfigStart.SwaggerConfig(services);
             //token config
             var secret = Encoding.ASCII.GetBytes(Configuration.GetSection("JwtConfigurations:Secret").Value);
