@@ -25,7 +25,7 @@ namespace Api_Cadastro_Usuario.Controllers
         }
 
         // GET: api/TasksToDo/5
-        [Authorize]
+        [Authorize(Roles = "User")]
         [HttpGet("{id}")]
         public IActionResult GetTasksToDoModel(Guid id)
         {
@@ -35,18 +35,19 @@ namespace Api_Cadastro_Usuario.Controllers
 
         // POST: api/TasksToDo
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize]
+        [Authorize(Roles = "User")]
         [HttpPost]
         public IActionResult PostTasksToDoModel(TasksViewModel tasksToDoModel)
         {
             var task = _context.Create(tasksToDoModel);
+
             if (!task.IsValid)
                 return BadRequest(MostrarErros(task));
             return Ok(tasksToDoModel);
         }
 
         // DELETE: api/TasksToDo/5 
-        [Authorize]
+        [Authorize(Roles = "User")]
         [ValidateAntiForgeryToken]
         [HttpDelete("{id}")]
         public IActionResult DeleteTasksToDoModel(Guid id)

@@ -19,7 +19,6 @@ namespace Api_Cadastro_Usuario.Controllers
         {
             _service = service;
         }
-
         // GET: api/Usuario
         [HttpGet]
         public IActionResult GetUsuarioModel()
@@ -81,12 +80,12 @@ namespace Api_Cadastro_Usuario.Controllers
             var login = _service.Login(user);
             if (!login.IsValid)
                 return NotFound(MostrarErros(login));
-            var token = SecurityService.TokenGenerator(user);
+            var usuarioToken = _service.GetByEmail(user.Email);
+            var token = SecurityService.TokenGenerator(usuarioToken);
             user.Senha = "";
-
             return Ok(new
             {
-                Login = user,
+                Login = user.Email,
                 Token = token
             });
         }

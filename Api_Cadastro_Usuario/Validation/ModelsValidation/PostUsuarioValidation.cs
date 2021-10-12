@@ -15,7 +15,7 @@ namespace Api_Cadastro_Usuario.Validation.ModelsValidation
 
             RuleFor(a => a.Email).NotEmpty().WithMessage(UsuarioErrorMessages.EmailVazio)
            .EmailAddress().WithMessage(UsuarioErrorMessages.EmailFormato)
-            .MaximumLength(100).WithMessage(UsuarioErrorMessages.EmailtamanhoMaximo)
+            .MaximumLength(150).WithMessage(UsuarioErrorMessages.EmailtamanhoMaximo)
            .MinimumLength(7).WithMessage(UsuarioErrorMessages.EmailtamanhoMinimo);
 
             RuleFor(a => a.Senha).NotEmpty().WithMessage(UsuarioErrorMessages.SenhaVazia)

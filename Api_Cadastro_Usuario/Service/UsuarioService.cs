@@ -27,6 +27,9 @@ namespace Api_Cadastro_Usuario.Service
             if (validation.IsValid)
             {
                 var response = usuario.ViewModelToUsuario();
+                response.Role = "User";
+                response.Nome.ToUpper().Trim();
+                response.Senha.Trim();
                 _repository.Create(response);
             }
             return validation;
