@@ -17,10 +17,10 @@ namespace Api_Cadastro_Usuario.Service
         {
             _repository = repository;
         }
-        public ValidationResult Create(TasksViewModel model)
+        public ValidationResult Create(TasksPostViewModel model, Guid id)
         {
-            var validation = new TaskValidationModel(_repository).Validate(model);
-            var convertModel = model.ViewModelToTasks();
+            var validation = new TaskValidationModel().Validate(model);
+            var convertModel = model.ViewModelToTasks(id);
             if (!validation.IsValid)
                 return validation;
 
@@ -59,5 +59,11 @@ namespace Api_Cadastro_Usuario.Service
         {
             return _repository.GetOne(codigo);
         }
+
+        public UsuarioModel GetByEmailUser(string email)
+        {
+            return _repository.GetByEmailUser(email);
+        }
+
     }
 }

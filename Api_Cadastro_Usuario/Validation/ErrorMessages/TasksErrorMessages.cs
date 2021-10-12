@@ -4,7 +4,6 @@
     {
         public static string TaskVazia = "A Task não pode ser vazia!";
         public static string TaskTamanhoMaximo = "O tamanho máximo de caracteres para uma task é de 500!";
-        public static string Task = "A Task tem que ter no mínimo 1 caracter!";
 
         public static string TaskDataMinima = "Você não pode escolher uma data passada para o agendamento!";
 

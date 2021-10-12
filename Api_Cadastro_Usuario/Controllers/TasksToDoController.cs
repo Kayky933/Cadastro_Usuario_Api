@@ -10,26 +10,27 @@ namespace Api_Cadastro_Usuario.Controllers
     [ApiController]
     public class TasksToDoController : ControllerPai
     {
-        private readonly ITasksToDoService _context;
+        private readonly ITasksToDoService _service;
 
-        public TasksToDoController(ITasksToDoService context)
+        public TasksToDoController(ITasksToDoService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: api/TasksToDo
-        [HttpGet]
-        public IActionResult GetTasksToDo()
-        {
-            return Ok(_context.GetAll());
-        }
+        //[HttpGet]
+        //public IActionResult GetTasksToDo()
+        //{
+        //    return Ok(_service.GetAll());
+        //}
 
         // GET: api/TasksToDo/5
         [Authorize(Roles = "User")]
-        [HttpGet("{id}")]
-        public IActionResult GetTasksToDoModel(Guid id)
+        [HttpGet]
+        public IActionResult GetTasksToDoModel()
         {
-            var tasksToDoModel = _context.GetOne(id);
+            var usuarioLogado = _service.GetByEmailUser(User.Identity.Name).Codigo;
+            var tasksToDoModel = _service.GetAllTasks(usuarioLogado);
             return Ok(tasksToDoModel);
         }
 
@@ -37,9 +38,10 @@ namespace Api_Cadastro_Usuario.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize(Roles = "User")]
         [HttpPost]
-        public IActionResult PostTasksToDoModel(TasksViewModel tasksToDoModel)
+        public IActionResult PostTasksToDoModel(TasksPostViewModel tasksToDoModel)
         {
-            var task = _context.Create(tasksToDoModel);
+            var usuarioLogado = _service.GetByEmailUser(User.Identity.Name).Codigo;
+            var task = _service.Create(tasksToDoModel, usuarioLogado);
 
             if (!task.IsValid)
                 return BadRequest(MostrarErros(task));
@@ -52,7 +54,7 @@ namespace Api_Cadastro_Usuario.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteTasksToDoModel(Guid id)
         {
-            var task = _context.Delet(id);
+            var task = _service.Delet(id);
             if (task == null)
             {
                 return NotFound();

@@ -38,6 +38,11 @@ namespace Api_Cadastro_Usuario.Repository
             return _context.TasksToDo.Where(a => a.Id_Usuario == id).FirstOrDefault();
         }
 
+        public UsuarioModel GetByEmailUser(string email)
+        {
+            return _context.UsuarioModel.Where(x => x.Email == email).FirstOrDefault();
+        }       
+
         public TasksToDoModel GetOne(Guid codigo)
         {
             return _context.TasksToDo.Where(a => a.Id == codigo).FirstOrDefault();

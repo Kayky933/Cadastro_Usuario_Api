@@ -26,10 +26,19 @@ namespace Api_Cadastro_Usuario.Controllers
             return Ok(_service.GetAll());
         }
         [Authorize]
-        [HttpGet("TasksUsuario/{id}")]
-        public IActionResult GetTasksToDo(Guid id)
+        [HttpGet]
+        [Route("LogedUser")]
+        public IActionResult LogedUserIdentity()
         {
-            return Ok(_service.GetAllTasks(id));
+            return Ok(User.Identity.Name.ToString());
+        }
+
+        [Authorize]
+        [HttpGet("TasksUsuario")]
+        public IActionResult GetTasksToDo()
+        {
+            var usuarioLogado = _service.GetByEmail(User.Identity.Name);
+            return Ok(_service.GetAllTasks(usuarioLogado.Codigo));
         }
 
 
@@ -40,7 +49,7 @@ namespace Api_Cadastro_Usuario.Controllers
         public IActionResult PutUsuarioModel(Guid id, UsuarioViewModel usuarioModel)
         {
             var user = usuarioModel.ViewModelToUsuario();
-
+            user.Role = "User";
             var response = _service.Put(id, user);
             if (!response.IsValid)
                 return BadRequest(MostrarErros(response));
@@ -52,7 +61,6 @@ namespace Api_Cadastro_Usuario.Controllers
         [HttpPost]
         public IActionResult PostUsuarioModel(UsuarioViewModel usuarioModel)
         {
-
             var response = _service.Create(usuarioModel);
             if (!response.IsValid)
                 return BadRequest(MostrarErros(response));
@@ -61,16 +69,17 @@ namespace Api_Cadastro_Usuario.Controllers
         }
 
         // DELETE: api/Usuario/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
         [Authorize]
-        public IActionResult DeleteUsuarioModel(Guid id)
+        public IActionResult DeleteUsuarioModel()
         {
-            var usuarioModel = _service.Delet(id);
+            var usuarioLogado = _service.GetByEmail(User.Identity.Name).Codigo;
+            var usuarioModel = _service.Delet(usuarioLogado);
             if (usuarioModel == null)
             {
                 return NotFound();
             }
-
+            // var token = HttpContext.Request.Headers[HeaderNames.Authorization].ToString();
             return NoContent();
         }
         [Route("Login")]
@@ -82,6 +91,7 @@ namespace Api_Cadastro_Usuario.Controllers
                 return NotFound(MostrarErros(login));
             var usuarioToken = _service.GetByEmail(user.Email);
             var token = SecurityService.TokenGenerator(usuarioToken);
+
             user.Senha = "";
             return Ok(new
             {

@@ -50,8 +50,7 @@ namespace UnitTestsProject.UnitTesteModels
         [InlineData("Jo")]
         public async Task NomesInvalidos(string nome)
         {
-            var maxLengthName = "A".PadLeft(101, 'A');
-            var instance2 = _usuario.With(x => x.Nome = maxLengthName).Build();
+            var instance2 = _usuario.With(x => x.Nome = "A".PadLeft(101, 'A')).Build();
 
             var instance1 = _usuario.With(x => x.Nome = nome).Build();
             var validation1 = await _validation.ValidateAsync(instance1);
@@ -121,9 +120,8 @@ namespace UnitTestsProject.UnitTesteModels
         [InlineData("44")]
         public async Task SenhasInvalidas(string senha)
         {
-            var maxLengthSenha = "1".PadLeft(101, '1');
             var instance1 = _usuario.With(x => x.Senha = senha).Build();
-            var instance2 = _usuario.With(x => x.Senha = maxLengthSenha).Build();
+            var instance2 = _usuario.With(x => x.Senha = "1".PadLeft(101, '1')).Build();
 
             var validation1 = await _validation.ValidateAsync(instance1);
             var validation2 = await _validation.ValidateAsync(instance2);

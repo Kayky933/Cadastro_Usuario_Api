@@ -1,6 +1,7 @@
 ﻿using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.Models.ViewModel;
 using Api_Cadastro_Usuario.POCO;
+using System;
 
 namespace Api_Cadastro_Usuario.ClassConvert
 {
@@ -25,12 +26,20 @@ namespace Api_Cadastro_Usuario.ClassConvert
             return view;
         }
 
-        public static TasksToDoModel ViewModelToTasks(this TasksViewModel viewModel)
+        public static TasksViewModel PostTasksViewModelToTasksViewModel(this TasksPostViewModel viewModel, Guid id)
+        {
+            TasksViewModel tasks = new();
+            tasks.Task = viewModel.Task;
+            tasks.Horario_Agendado = viewModel.Horario_Agendado;
+            tasks.Id_Usuario = id;
+            return tasks;
+        }
+        public static TasksToDoModel ViewModelToTasks(this TasksPostViewModel viewModel, Guid id)
         {
             TasksToDoModel tasks = new();
             tasks.Task = viewModel.Task;
             tasks.Horario_Agendado = viewModel.Horario_Agendado;
-            tasks.Id_Usuario = viewModel.Id_Usuario;
+            tasks.Id_Usuario = id;
             return tasks;
         }
         public static UsuarioModel LoginModelToUsuario(this UsuarioLogin usuario)

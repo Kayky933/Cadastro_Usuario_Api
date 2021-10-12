@@ -1,19 +1,16 @@
-﻿using Api_Cadastro_Usuario.Data;
-using Api_Cadastro_Usuario.Models.ViewModel;
+﻿using Api_Cadastro_Usuario.Models.ViewModel;
 using FizzWare.NBuilder;
 using System;
 
 namespace UnitTestsProject.Builder
 {
-    public class TasksBuilderModel : BuilderBase<TasksViewModel>
+    public class TasksBuilderModel : BuilderBase<TasksPostViewModel>
     {
-        private readonly Api_Cadastro_UsuarioContext _usuarioRepository;
         protected override void LoadDefault()
         {
-            _builderInstance = Builder<TasksViewModel>.CreateNew()
+            _builderInstance = Builder<TasksPostViewModel>.CreateNew()
                   .With(x => x.Task = "Teste")
-                  .With(x => x.Horario_Agendado = DateTime.Now.AddMinutes(10))
-                  .With(x => x.Id_Usuario = _usuarioRepository.UsuarioModel.Find(x.Id_Usuario).Codigo);
+                  .With(x => x.Horario_Agendado = DateTime.Now.AddMinutes(10));
         }
     }
 }
