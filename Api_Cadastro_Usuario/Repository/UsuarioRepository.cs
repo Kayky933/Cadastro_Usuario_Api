@@ -5,6 +5,7 @@ using Api_Cadastro_Usuario.Service;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Api_Cadastro_Usuario.Repository
@@ -22,9 +23,10 @@ namespace Api_Cadastro_Usuario.Repository
             _context.UsuarioModel.Remove(model);
             SaveChangesDb();
         }
-        public IEnumerable<TasksToDoModel> GetAllTasks(Guid id)
+        public IEnumerable<object> GetAllTasks(Guid id)
         {
-            return _context.TasksToDo.Where(x => x.Id_Usuario == id).OrderBy(x => x.Horario_Post).ToList();
+            CultureInfo idioma = new CultureInfo("pt-BR");
+            return _context.TasksToDo.Where(x => x.Id_Usuario == id).OrderBy(x => x.Horario_Post).Select(x => new { x.Task, x.Horario_Post, x.Horario_Agendado }).ToList();
         }
         public DbSet<UsuarioModel> GetContext()
         {
@@ -75,5 +77,6 @@ namespace Api_Cadastro_Usuario.Repository
             string senhaCriptograf = SecurityService.Criptografar(senha);
             return _context.UsuarioModel.Where(a => a.Senha == senhaCriptograf).FirstOrDefault();
         }
+
     }
 }

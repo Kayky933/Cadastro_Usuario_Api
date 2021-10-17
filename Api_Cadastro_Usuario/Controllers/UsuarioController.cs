@@ -1,5 +1,4 @@
-﻿using Api_Cadastro_Usuario.ClassConvert;
-using Api_Cadastro_Usuario.Interfaces.Service;
+﻿using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.Models.ViewModel;
 using Api_Cadastro_Usuario.POCO;
 using Api_Cadastro_Usuario.Service;
@@ -25,6 +24,7 @@ namespace Api_Cadastro_Usuario.Controllers
         {
             return Ok(_service.GetAll());
         }
+
         [Authorize]
         [HttpGet]
         [Route("LogedUser")]
@@ -38,7 +38,11 @@ namespace Api_Cadastro_Usuario.Controllers
         public IActionResult GetTasksToDo()
         {
             var usuarioLogado = _service.GetByEmail(User.Identity.Name);
-            return Ok(_service.GetAllTasks(usuarioLogado.Codigo));
+            if (usuarioLogado == null)
+                return BadRequest("Usuario não encontrado!");
+
+            var tasks = _service.GetAllTasks(usuarioLogado.Codigo);
+            return Ok(tasks);
         }
 
 
@@ -48,9 +52,7 @@ namespace Api_Cadastro_Usuario.Controllers
         [Authorize]
         public IActionResult PutUsuarioModel(Guid id, UsuarioViewModel usuarioModel)
         {
-            var user = usuarioModel.ViewModelToUsuario();
-            user.Role = "User";
-            var response = _service.Put(id, user);
+            var response = _service.Put(id, usuarioModel);
             if (!response.IsValid)
                 return BadRequest(MostrarErros(response));
             return NoContent();
@@ -58,9 +60,12 @@ namespace Api_Cadastro_Usuario.Controllers
 
         // POST: api/Usuario
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPost]
         public IActionResult PostUsuarioModel(UsuarioViewModel usuarioModel)
         {
+            if (User.Identity.IsAuthenticated)
+                return BadRequest("Usuario já logado!");
             var response = _service.Create(usuarioModel);
             if (!response.IsValid)
                 return BadRequest(MostrarErros(response));
@@ -73,22 +78,28 @@ namespace Api_Cadastro_Usuario.Controllers
         [Authorize]
         public IActionResult DeleteUsuarioModel()
         {
-            var usuarioLogado = _service.GetByEmail(User.Identity.Name).Codigo;
-            var usuarioModel = _service.Delet(usuarioLogado);
+            var usuarioLogado = _service.GetByEmail(User.Identity.Name);
+            if (usuarioLogado == null)
+                return BadRequest("Usuario não encontrado");
+
+            var usuarioModel = _service.Delet(usuarioLogado.Codigo);
             if (usuarioModel == null)
-            {
                 return NotFound();
-            }
-            // var token = HttpContext.Request.Headers[HeaderNames.Authorization].ToString();
+
+
             return NoContent();
         }
         [Route("Login")]
         [HttpPost]
         public IActionResult Login(UsuarioLogin user)
         {
+            if (User.Identity.IsAuthenticated)
+                return BadRequest("Usuario já logado!");
+
             var login = _service.Login(user);
             if (!login.IsValid)
                 return NotFound(MostrarErros(login));
+
             var usuarioToken = _service.GetByEmail(user.Email);
             var token = SecurityService.TokenGenerator(usuarioToken);
 
@@ -99,7 +110,5 @@ namespace Api_Cadastro_Usuario.Controllers
                 Token = token
             });
         }
-
-
     }
 }

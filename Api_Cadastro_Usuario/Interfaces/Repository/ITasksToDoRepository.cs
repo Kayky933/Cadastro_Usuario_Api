@@ -1,5 +1,6 @@
 ﻿using Api_Cadastro_Usuario.Models;
 using System;
+using System.Collections.Generic;
 
 namespace Api_Cadastro_Usuario.Interfaces.Repository
 {
@@ -7,7 +8,7 @@ namespace Api_Cadastro_Usuario.Interfaces.Repository
     {
         public UsuarioModel GetOneUsuario(Guid id);
         public UsuarioModel GetByEmailUser(string email);
-        public TasksToDoModel GetAllTasks(Guid id);
+        public IEnumerable<TasksToDoModel> GetAllTasks(Guid id);
         public void Create(TasksToDoModel model);
     }
 }

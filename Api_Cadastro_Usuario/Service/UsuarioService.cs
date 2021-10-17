@@ -1,11 +1,11 @@
-﻿using Api_Cadastro_Usuario.ClassConvert;
-using Api_Cadastro_Usuario.Interfaces.Repository;
+﻿using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Interfaces.Service;
 using Api_Cadastro_Usuario.Models;
 using Api_Cadastro_Usuario.Models.ViewModel;
 using Api_Cadastro_Usuario.POCO;
 using Api_Cadastro_Usuario.Validation.BusinessValidation;
 using Api_Cadastro_Usuario.Validation.ModelsValidation;
+using AutoMapper;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,9 +16,11 @@ namespace Api_Cadastro_Usuario.Service
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _repository;
-        public UsuarioService(IUsuarioRepository repository)
+        private readonly IMapper _mapper;
+        public UsuarioService(IUsuarioRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         public ValidationResult Create(UsuarioViewModel usuario)
@@ -26,7 +28,7 @@ namespace Api_Cadastro_Usuario.Service
             var validation = ValidateModelViewsusuario(usuario);
             if (validation.IsValid)
             {
-                var response = usuario.ViewModelToUsuario();
+                var response = _mapper.Map<UsuarioModel>(usuario);
                 response.Role = "User";
                 response.Nome.ToUpper().Trim();
                 response.Senha.Trim();
@@ -36,7 +38,7 @@ namespace Api_Cadastro_Usuario.Service
         }
         private ValidationResult ValidateModelViewsusuario(UsuarioViewModel usuario)
         {
-            var business = usuario.ViewModelToUsuario();
+            var business = _mapper.Map<UsuarioModel>(usuario);
             var validation = new PostUsuarioValidation().Validate(usuario);
             var validationBusiness = new UsuarioBusinessValidation(_repository).Validate(business);
 
@@ -49,7 +51,7 @@ namespace Api_Cadastro_Usuario.Service
             return validation;
 
         }
-        public IEnumerable<TasksToDoModel> GetAllTasks(Guid id)
+        public IEnumerable<object> GetAllTasks(Guid id)
         {
             return _repository.GetAllTasks(id);
 
@@ -97,7 +99,7 @@ namespace Api_Cadastro_Usuario.Service
 
         public ValidationResult Login(UsuarioLogin loginUsuario)
         {
-            var usuario = loginUsuario.LoginModelToUsuario();
+            var usuario = _mapper.Map<UsuarioModel>(loginUsuario);
             var validation = new LoginUsuarioValidation(_repository).Validate(loginUsuario);
             if (!validation.IsValid)
                 return validation;
@@ -109,15 +111,15 @@ namespace Api_Cadastro_Usuario.Service
             return validation;
         }
 
-        public ValidationResult Put(Guid id, UsuarioModel usuario)
+        public ValidationResult Put(Guid id, UsuarioViewModel usuario)
         {
-
-            var usuarioValidate = usuario.UsuarioModelToView();
-            var validation = new PostUsuarioValidation().Validate(usuarioValidate);
+            var validation = new PostUsuarioValidation().Validate(usuario);
 
             if (validation.IsValid)
             {
-                _repository.Put(id, usuario);
+                var usuarioValidado = _mapper.Map<UsuarioModel>(usuario);
+                usuarioValidado.Role = "User";
+                _repository.Put(id, usuarioValidado);
             }
 
             return validation;

@@ -28,6 +28,7 @@ namespace Api_Cadastro_Usuario
             services.AddControllers();
 
             ConfigStart.SwaggerConfig(services);
+            ConfigStart.ConfigureAutoMapper(services);
             //token config
             var secret = Encoding.ASCII.GetBytes(Configuration.GetSection("JwtConfigurations:Secret").Value);
             services.AddAuthentication(x =>

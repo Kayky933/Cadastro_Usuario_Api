@@ -10,12 +10,14 @@ namespace Api_Cadastro_Usuario.Interfaces.Service
 {
     public interface IUsuarioService : IBaseService<UsuarioModel>
     {
-        public IEnumerable<TasksToDoModel> GetAllTasks(Guid id);
+        public IEnumerable<object> GetAllTasks(Guid id);
         public ValidationResult Create(UsuarioViewModel usuario);
         public ValidationResult Login(UsuarioLogin loginUsuario);
         public DbSet<UsuarioModel> GetContext();
-        public ValidationResult Put(Guid id, UsuarioModel usuario);
+        public ValidationResult Put(Guid id, UsuarioViewModel usuario);
         public UsuarioModel GetByEmail(string email);
         public UsuarioModel GetByPassword(string senha);
+
+
     }
 }
