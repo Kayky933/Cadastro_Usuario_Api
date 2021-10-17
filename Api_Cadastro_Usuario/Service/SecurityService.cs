@@ -1,4 +1,4 @@
-﻿using Api_Cadastro_Usuario.POCO;
+﻿using Api_Cadastro_Usuario.Models;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,6 +10,7 @@ namespace Api_Cadastro_Usuario.Service
 {
     public class SecurityService
     {
+
         public static string Criptografar(string senha)
         {
             MD5 md5Hasher = MD5.Create();
@@ -24,16 +25,17 @@ namespace Api_Cadastro_Usuario.Service
 
             return strBuilder.ToString();
         }
-        public static string TokenGenerator(UsuarioLogin user)
+        public static string TokenGenerator(UsuarioModel user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
+            user.Role = "User";
             var key = Encoding.ASCII.GetBytes("ChavePresenteNoServidor");
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Email, user.Email.ToString()),
-                    new Claim(ClaimTypes.Role, user.Senha.ToString())
+                    new Claim(ClaimTypes.Name, user.Email.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

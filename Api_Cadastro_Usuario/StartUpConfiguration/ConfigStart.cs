@@ -1,5 +1,6 @@
 ﻿using Api_Cadastro_Usuario.Interfaces.Repository;
 using Api_Cadastro_Usuario.Interfaces.Service;
+using Api_Cadastro_Usuario.Mapper;
 using Api_Cadastro_Usuario.Repository;
 using Api_Cadastro_Usuario.Service;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,10 @@ namespace Api_Cadastro_Usuario.StartUpConfiguration
 {
     public class ConfigStart
     {
+        public static void ConfigureAutoMapper(IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(AutoMapperClass));
+        }
         public static void InterfacesConfig(IServiceCollection services)
         {
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();

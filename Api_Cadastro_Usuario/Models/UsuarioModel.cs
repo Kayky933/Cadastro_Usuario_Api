@@ -14,6 +14,7 @@ namespace Api_Cadastro_Usuario.Models
         public string Nome { get; set; }
         [DataType(DataType.Date)]
         public DateTime Data_Nascimento { get; set; }
+        public string Role { get; set; }
         [DataType(DataType.EmailAddress)]
         [MinLength(7)]
         [MaxLength(150)]

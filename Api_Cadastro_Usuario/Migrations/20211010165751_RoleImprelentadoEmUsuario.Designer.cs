@@ -4,34 +4,22 @@ using Api_Cadastro_Usuario.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Api_Cadastro_Usuario.Migrations
 {
     [DbContext(typeof(Api_Cadastro_UsuarioContext))]
-    partial class Api_Cadastro_UsuarioContextModelSnapshot : ModelSnapshot
+    [Migration("20211010165751_RoleImprelentadoEmUsuario")]
+    partial class RoleImprelentadoEmUsuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.11")
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Api_Cadastro_Usuario.Models.InvalidTokens", b =>
-                {
-                    b.Property<Guid>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Token")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.ToTable("InvalidTokens");
-                });
 
             modelBuilder.Entity("Api_Cadastro_Usuario.Models.TasksToDoModel", b =>
                 {

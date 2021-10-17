@@ -33,15 +33,26 @@ namespace Api_Cadastro_Usuario.Repository
             return _context.TasksToDo.ToList();
         }
 
-        public TasksToDoModel GetAllTasks(Guid id)
+        public IEnumerable<TasksToDoModel> GetAllTasks(Guid id)
         {
-            return _context.TasksToDo.Where(a => a.Id_Usuario == id).FirstOrDefault();
+            return _context.TasksToDo.Where(a => a.Id_Usuario == id).ToList();
+        }
+
+        public UsuarioModel GetByEmailUser(string email)
+        {
+            return _context.UsuarioModel.Where(x => x.Email == email).FirstOrDefault();
         }
 
         public TasksToDoModel GetOne(Guid codigo)
         {
             return _context.TasksToDo.Where(a => a.Id == codigo).FirstOrDefault();
         }
+
+        public UsuarioModel GetOneUsuario(Guid id)
+        {
+            return _context.UsuarioModel.Where(a => a.Codigo == id).FirstOrDefault();
+        }
+
         public void SaveChangesDb()
         {
             _context.SaveChanges();
