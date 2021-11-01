@@ -30,7 +30,7 @@ namespace Api_Cadastro_Usuario
             ConfigStart.SwaggerConfig(services);
             ConfigStart.ConfigureAutoMapper(services);
             //token config
-            var secret = Encoding.ASCII.GetBytes(Configuration.GetSection("JwtConfigurations:Secret").Value);
+            var secret = Encoding.ASCII.GetBytes(Settings.Secret);
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
