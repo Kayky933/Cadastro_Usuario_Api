@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Api_Cadastro_Usuario
+﻿namespace Api_Cadastro_Usuario
 {
     public static class Settings
     {

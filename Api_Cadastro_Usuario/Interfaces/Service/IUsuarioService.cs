@@ -14,7 +14,7 @@ namespace Api_Cadastro_Usuario.Interfaces.Service
         public ValidationResult Create(UsuarioViewModel usuario);
         public ValidationResult Login(UsuarioLogin loginUsuario);
         public DbSet<UsuarioModel> GetContext();
-        public ValidationResult Put(Guid id, UsuarioViewModel usuario);
+        public ValidationResult Put(UsuarioViewModel usuario);
         public UsuarioModel GetByEmail(string email);
         public UsuarioModel GetByPassword(string senha);
 

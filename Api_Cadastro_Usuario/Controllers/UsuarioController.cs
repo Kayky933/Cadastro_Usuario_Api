@@ -33,13 +33,22 @@ namespace Api_Cadastro_Usuario.Controllers
         {
             return Ok(User.Identity.Name.ToString());
         }
+        [Authorize]
+        [HttpGet]
+        [Route("Token")]
+        public IActionResult ActualToken()
+        {
+            var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+            return Ok(token.ToString());
+        }
 
         [Authorize]
         [HttpGet("TasksUsuario")]
         public IActionResult GetTasksToDo()
         {
             var user = _service.GetByEmail(User.Identity.Name);
-            if (user == null)
+            var token = SecurityService.GetToken(user.Email);
+            if (token == null || user == null)
                 return NotFound("Usuario não logado!");
 
             var tasks = _service.GetAllTasks(user.Codigo);
@@ -54,10 +63,11 @@ namespace Api_Cadastro_Usuario.Controllers
         public IActionResult PutUsuarioModel(Guid id, UsuarioViewModel usuarioModel)
         {
             var user = _service.GetByEmail(User.Identity.Name);
-            if (user == null)
+            var token = SecurityService.GetToken(user.Email);
+            if (token == null || user == null)
                 return NotFound("Usuario não logado!");
 
-            var response = _service.Put(id, usuarioModel);
+            var response = _service.Put(usuarioModel);
             if (!response.IsValid)
                 return BadRequest(MostrarErros(response));
             return NoContent();
@@ -65,13 +75,13 @@ namespace Api_Cadastro_Usuario.Controllers
 
         // POST: api/Usuario
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-
         [HttpPost]
         public IActionResult PostUsuarioModel(UsuarioViewModel usuarioModel)
         {
             var user = _service.GetByEmail(User.Identity.Name);
-            if (user == null)
-                return NotFound("Usuario não logado!");
+            var token = SecurityService.GetToken(user.Email);
+            if (token != null)
+                return BadRequest("Usuario Já esta logado!");
 
             var response = _service.Create(usuarioModel);
             if (!response.IsValid)
@@ -86,7 +96,8 @@ namespace Api_Cadastro_Usuario.Controllers
         public IActionResult DeleteUsuarioModel()
         {
             var user = _service.GetByEmail(User.Identity.Name);
-            if (user == null)
+            var token = SecurityService.GetToken(user.Email);
+            if (token == null || user == null)
                 return NotFound("Usuario não logado!");
 
             var usuarioModel = _service.Delet(user.Codigo);
@@ -96,6 +107,7 @@ namespace Api_Cadastro_Usuario.Controllers
 
             return NoContent();
         }
+
         [Route("Login")]
         [HttpPost]
         public IActionResult Login(UsuarioLogin user)
@@ -109,7 +121,7 @@ namespace Api_Cadastro_Usuario.Controllers
             var token = SecurityService.TokenGenerator(usuarioToken);
             var refreshToken = SecurityService.GenerateRefreshToken();
 
-            SecurityService.SaveToken(usuarioToken.Email, refreshToken);
+            SecurityService.SaveRefreshToken(usuarioToken.Email, refreshToken);
             SecurityService.SaveToken(usuarioToken.Email, token);
 
 
@@ -121,6 +133,7 @@ namespace Api_Cadastro_Usuario.Controllers
                 refreshToken = refreshToken
             });
         }
+
         [Authorize]
         [HttpPost("RefreshToken")]
         public IActionResult Refresh(string token, string refreshToken)
@@ -129,14 +142,14 @@ namespace Api_Cadastro_Usuario.Controllers
             if (user == null)
                 return NotFound("Usuario não logado!");
 
-            var principal = SecurityService.GetPrincipalFromExpiresToken(token);
             var userEmail = _service.GetByEmail(User.Identity.Name);
-            var saveRefreshToken = SecurityService.GetToken(userEmail.Email);
+            var principal = SecurityService.GetPrincipalFromExpiresToken(token);
+            var saveRefreshToken = SecurityService.GetRefreshToken(userEmail.Email);
+
             if (saveRefreshToken != refreshToken)
                 throw new SecurityTokenException("Invalid refresh");
 
             var newRefreshToken = SecurityService.GenerateRefreshToken();
-
             var newJwtToken = SecurityService.TokenGenerator(principal.Claims);
             SecurityService.DeletToken(userEmail.Email, refreshToken);
             SecurityService.SaveToken(userEmail.Email, newRefreshToken);
@@ -148,6 +161,7 @@ namespace Api_Cadastro_Usuario.Controllers
             });
 
         }
+
         [Authorize]
         [HttpPost("LogOut")]
         public IActionResult LogOut()
@@ -155,8 +169,8 @@ namespace Api_Cadastro_Usuario.Controllers
             var user = _service.GetByEmail(User.Identity.Name);
             if (user == null)
                 return NotFound("Usuario não logado!");
-
-            SecurityService.DeletAllTokensUser(user.Email);
+            var actualToken = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+            SecurityService.DeletToken(user.Email, actualToken);
             return Ok("Usuario deslogado com sucesso!");
         }
 

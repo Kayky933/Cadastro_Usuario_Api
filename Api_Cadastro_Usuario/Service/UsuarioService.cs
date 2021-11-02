@@ -111,7 +111,7 @@ namespace Api_Cadastro_Usuario.Service
             return validation;
         }
 
-        public ValidationResult Put(Guid id, UsuarioViewModel usuario)
+        public ValidationResult Put(UsuarioViewModel usuario)
         {
             var validation = new PostUsuarioValidation().Validate(usuario);
 
@@ -119,9 +119,8 @@ namespace Api_Cadastro_Usuario.Service
             {
                 var usuarioValidado = _mapper.Map<UsuarioModel>(usuario);
                 usuarioValidado.Role = "User";
-                _repository.Put(id, usuarioValidado);
+                _repository.Put(usuarioValidado);
             }
-
             return validation;
         }
     }

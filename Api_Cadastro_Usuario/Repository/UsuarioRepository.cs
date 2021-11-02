@@ -64,9 +64,8 @@ namespace Api_Cadastro_Usuario.Repository
             _context.SaveChanges();
         }
 
-        public void Put(Guid id, UsuarioModel usuario)
+        public void Put(UsuarioModel usuario)
         {
-            usuario.Codigo = id;
             usuario.Senha = SecurityService.Criptografar(usuario.Senha);
             this.GetContext().Update(usuario).State = EntityState.Modified;
             SaveChangesDb();

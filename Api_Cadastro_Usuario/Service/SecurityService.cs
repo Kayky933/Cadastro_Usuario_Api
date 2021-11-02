@@ -1,7 +1,6 @@
 ﻿using Api_Cadastro_Usuario.Models;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -93,25 +92,40 @@ namespace Api_Cadastro_Usuario.Service
         }
 
         private static List<(string, string)> _refreshTokens = new();
+        private static List<(string, string)> _normalToken = new();
 
-        public static void SaveToken(string userEmail, string refreshToken)
+        #region Normal tokens
+        public static void SaveToken(string userEmail, string token)
         {
-            _refreshTokens.Add(new(userEmail, refreshToken));
+            _normalToken.Add(new(userEmail, token));
         }
         public static string GetToken(string userEmail)
         {
+            return _normalToken.FirstOrDefault(x => x.Item1 == userEmail).Item2;
+        }
+        public static void DeletToken(string email, string token)
+        {
+            var item = _normalToken.FirstOrDefault(x => x.Item1 == email && x.Item2 == token);
+            _normalToken.Remove(item);
+        }
+        #endregion
+
+        #region refresh tokens
+
+        public static void SaveRefreshToken(string userEmail, string refreshToken)
+        {
+            _refreshTokens.Add(new(userEmail, refreshToken));
+        }
+
+        public static string GetRefreshToken(string userEmail)
+        {
             return _refreshTokens.FirstOrDefault(x => x.Item1 == userEmail).Item2;
         }
-        public static void DeletToken(string userName, string refreshToken)
+        public static void DeletRefreshToken(string userName, string refreshToken)
         {
             var item = _refreshTokens.FirstOrDefault(x => x.Item1 == userName && x.Item2 == refreshToken);
             _refreshTokens.Remove(item);
         }
-        public static void DeletAllTokensUser(string email)
-        {
-            var tokens = _refreshTokens.FirstOrDefault(x => x.Item1 == email);
-            
-                _refreshTokens.Remove(tokens);
-        }
+        #endregion
     }
 }
